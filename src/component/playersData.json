@@ -763,7 +763,7 @@
     ,
     {
       "id": 80,
-      "name": "SK IMRAN",
+      "name": "iqbal khokar",
       "speciality": "BATSMAN",
       "age": 30,
       "image": "/images/open/48.jpg",
@@ -1050,4 +1050,15 @@
       "sold": false,
       "gifPlayed": false
     }
+    ,
+    {
+      "id": 109,
+      "name": "AB WAHEED",
+      "speciality": "ALL ROUNDER",
+      "age": 30,
+      "image": "/images/open/77.jpg",
+      "sold": false,
+      "gifPlayed": false
+    },
+    { "id": "u16", "type": "label", "label": "Thank You ! Best Wishes from SPL comitee to all players and teams" }
   ]

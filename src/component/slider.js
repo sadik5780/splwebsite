@@ -61,8 +61,8 @@ const Slider = () => {
 
   const textVariants = {
     initial: { opacity: 0, x: 100 },
-    animate: { opacity: 1, x: 0, transition: { duration: 1 } },
-    exit: { opacity: 0, x: 100, transition: { duration: 1 } },
+    animate: { opacity: 1, x: 0, transition: { duration: .5 } },
+    exit: { opacity: 0, x: 100, transition: { duration: .5 } },
   };
 
   return (
@@ -80,8 +80,11 @@ const Slider = () => {
         </h1>
       </div>
 
-      <div className="constant-text">
-        <span>Presented by</span> <br /> Sadik Shaikh
+      <div className="constant-text text-center">
+        <span>Presented by</span> <br /> SPL
+      </div>
+      <div className="constant-text2">
+        <span>Developed by - </span>Orient Software Solutions, 77 0909 5899 (Sadik Sir)
       </div>
 
       <AnimatePresence mode="wait">
@@ -91,12 +94,13 @@ const Slider = () => {
           initial="initial"
           animate="animate"
           exit="exit"
+          variants={textVariants}
         >
           {currentPlayer.type === "label" ? (
             <motion.h1
               key={currentPlayer.id}
               className="category-label"
-              variants={textVariants}
+              // variants={textVariants}
             >
               {currentPlayer.label}
             </motion.h1>
@@ -107,7 +111,7 @@ const Slider = () => {
                 <motion.div
                   className="player-image"
                   key={`${currentPlayer.id}-image`}
-                  variants={imageVariants}
+                  // variants={imageVariants}
                 >
                   <div className="player-image-wrapper">
                     <img
@@ -145,7 +149,7 @@ const Slider = () => {
                 <motion.div
                   className="player-info"
                   key={`${currentPlayer.id}-info`}
-                  variants={textVariants}
+                  // variants={textVariants}
                 >
                   <h2>
                     Name : <br /> <span> {currentPlayer.name} </span>
@@ -191,7 +195,9 @@ const Slider = () => {
       </AnimatePresence>
 
       <div className="navigation">
-        <button onClick={prevSlide} disabled={currentIndex === 0}>
+        <button onClick={prevSlide} 
+        // disabled={currentIndex === 0}
+        >
           Previous
         </button>
         <button onClick={nextSlide}>Next</button>

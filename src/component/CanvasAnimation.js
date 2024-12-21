@@ -29,7 +29,7 @@ const CanvasAnimation = () => {
         color: `rgb(${random(255)},${random(255)},${random(255)})`,
         x: random(width),
         y: random(height),
-        velocity: random(3) + 1,
+        velocity: random(2) + 1,
       }));
     };
 

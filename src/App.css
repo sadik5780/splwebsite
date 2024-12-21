@@ -214,6 +214,16 @@
   font-weight: bold;
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
 }
+.constant-text2 {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
+}
 
 .slider-container .congrats-overlay {
   position: fixed;
