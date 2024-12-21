@@ -53,17 +53,17 @@ const Slider = () => {
 
   const currentPlayer = players[currentIndex];
 
-  // const imageVariants = {
-  //   initial: { opacity: 0, x: -100 },
-  //   animate: { opacity: 1, x: 0, transition: { duration: 1 } },
-  //   exit: { opacity: 0, x: -100, transition: { duration: 1 } },
-  // };
+  const imageVariants = {
+    initial: { opacity: 0, x: -100 },
+    animate: { opacity: 1, x: 0, transition: { duration: 1 } },
+    exit: { opacity: 0, x: -100, transition: { duration: 1 } },
+  };
 
-  // const textVariants = {
-  //   initial: { opacity: 0, x: 100 },
-  //   animate: { opacity: 1, x: 0, transition: { duration: 1 } },
-  //   exit: { opacity: 0, x: 100, transition: { duration: 1 } },
-  // };
+  const textVariants = {
+    initial: { opacity: 0, x: 100 },
+    animate: { opacity: 1, x: 0, transition: { duration: 1 } },
+    exit: { opacity: 0, x: 100, transition: { duration: 1 } },
+  };
 
   return (
     <div
@@ -96,7 +96,7 @@ const Slider = () => {
             <motion.h1
               key={currentPlayer.id}
               className="category-label"
-              // variants={textVariants}
+              variants={textVariants}
             >
               {currentPlayer.label}
             </motion.h1>
@@ -107,7 +107,7 @@ const Slider = () => {
                 <motion.div
                   className="player-image"
                   key={`${currentPlayer.id}-image`}
-                  // variants={imageVariants}
+                  variants={imageVariants}
                 >
                   <div className="player-image-wrapper">
                     <img
@@ -145,7 +145,7 @@ const Slider = () => {
                 <motion.div
                   className="player-info"
                   key={`${currentPlayer.id}-info`}
-                  // variants={textVariants}
+                  variants={textVariants}
                 >
                   <h2>
                     Name : <br /> <span> {currentPlayer.name} </span>

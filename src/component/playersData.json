@@ -1,5 +1,6 @@
 [
-    
+  { "id": "u16", "type": "label", "label": "Welcome to SPL Season 8 Auction Hall" },
+  { "id": "u16", "type": "label", "label": "UNDER 16" },
     {
       "id": 1,
       "name": "SAHIL  PATHAN",
@@ -1005,7 +1006,7 @@
       "name": "SK AZHAR",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/72.jpeg",
+      "image": "/images/open/72.jpg",
       "sold": false,
       "gifPlayed": false
     }
