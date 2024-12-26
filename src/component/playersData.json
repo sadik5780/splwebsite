@@ -1060,5 +1060,23 @@
       "sold": false,
       "gifPlayed": false
     },
+    {
+      "id": 110,
+      "name": "Ahrar siddique",
+      "speciality": "ALL ROUNDER",
+      "age": 30,
+      "image": "/images/open/78.jpeg",
+      "sold": false,
+      "gifPlayed": false
+    },
+    {
+      "id": 111,
+      "name": "Tayab mulla",
+      "speciality": "ALL ROUNDER",
+      "age": 30,
+      "image": "/images/open/79.jpeg",
+      "sold": false,
+      "gifPlayed": false
+    },
     { "id": "u16", "type": "label", "label": "Thank You ! Best Wishes from SPL comitee to all players and teams" }
   ]
