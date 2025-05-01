@@ -8,7 +8,7 @@ const Slider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("")
   
-
+console.log(players)
   // Create an Audio instance for the main.mp3 sound
   const audio = new Audio("/images/main.mp3"); 
 
