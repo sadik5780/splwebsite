@@ -225,6 +225,12 @@
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.6);
 }
 
+.slider-container .search-container{
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
 .slider-container .congrats-overlay {
   position: fixed;
   top: 0;
