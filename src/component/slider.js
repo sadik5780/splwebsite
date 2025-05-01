@@ -103,12 +103,13 @@ const currentPlayer = filteredPlayers[currentIndex];
         </h1>
       </div>
       <div className="search-container">
-        
+
   <input
     type="text"
     placeholder="Search players..."
     onChange={(e) => setSearchQuery(e.target.value)}
   />
+  
 </div>
 
       <div className="constant-text text-center">
