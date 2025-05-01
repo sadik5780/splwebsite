@@ -8,7 +8,8 @@ const Slider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("")
   
-console.log(players)
+  const names = playersData.map(player => player.name);
+  console.log(names);
   // Create an Audio instance for the main.mp3 sound
   const audio = new Audio("/images/main.mp3"); 
 
@@ -98,7 +99,7 @@ const currentPlayer = filteredPlayers[currentIndex];
         <img src="/images/SPLlogo.png" alt="SPL Logo" className="spl-logo" />
         <h1>
           <span style={{ fontWeight: "bold", color: "yellow", margin:'0 10px 0' }}>IMRAN KHANSAHAB</span>{" "}
-          PRESENTS &nbsp; <span className="spl">SPL SEASON-8</span>
+          PRESENTS &nbsp; <span className="spl">SPL SEASON-6</span>
         </h1>
       </div>
       <div className="search-container">

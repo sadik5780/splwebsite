@@ -87,7 +87,7 @@
       "name": "HAMZA PARVEZ KHAN",
       "speciality": "Batsman",
       "age": 16,
-      "image": "/images/U16/10.jpg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -178,7 +178,7 @@
       "name": "MD IBRAHIM",
       "speciality": "Batsman",
       "age": 19,
-      "image": "/images/U19/7.jpg",
+      "image": "/images/U19/18.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -205,7 +205,7 @@
       "name": "AFFAN PATEL",
       "speciality": "Batsman",
       "age": 19,
-      "image": "/images/U19/10.jpg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -214,7 +214,7 @@
       "name": "RAQEEB PATEL",
       "speciality": "BOWLER",
       "age": 19,
-      "image": "/images/U19/11.jpg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -232,7 +232,7 @@
       "name": "SK AHAD",
       "speciality": "ALL ROUNDER ",
       "age": 19,
-      "image": "/images/U19/13.jpg",
+      "image": "/images/U19/ahad.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -241,7 +241,7 @@
       "name": "REHAN THALA",
       "speciality": "Batsman",
       "age": 19,
-      "image": "/images/U19/14.jpg",
+      "image": "/images/U16/10.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -278,7 +278,7 @@
       "name": "SAMAD KISMATWALA",
       "speciality": "Batsman",
       "age": 29,
-      "image": "/images/open/2.jpg",
+      "image": "/images/U19/samadk.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -378,7 +378,7 @@
       "name": "YASER YABA",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/12.jpg",
+      "image": "/images/open/yaser.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -388,7 +388,7 @@
       "name": "SHAFIQUE KAPPA",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/13.jpg",
+      "image": "/images/open/shafik.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -418,7 +418,7 @@
       "name": "NASER NASH",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/16.jpg",
+      "image": "/images/open/naser.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -428,7 +428,7 @@
       "name": "ZAFAR HEERA",
       "speciality": "ALL ROUNDER",
       "age": 29,
-      "image": "/images/open/17.jpg",
+      "image": "/images/open/zafar.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -458,7 +458,7 @@
       "name": "IMRAN KHAN TILLI",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/20.jpg",
+      "image": "/images/open/imrantilli.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -468,7 +468,7 @@
       "name": "FAIZAN MOHOMMAD",
       "speciality": "BATSMAN",
       "age": 28,
-      "image": "/images/open/22.jpg",
+      "image": "/images/open/faizan.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -508,7 +508,7 @@
       "name": "HASAN SHAH",
       "speciality": "BOWLER",
       "age": 29,
-      "image": "/images/open/26.jpg",
+      "image": "/images/open/hasanshah.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -568,7 +568,7 @@
       "name": "MAHESH BHALERAO",
       "speciality": "ALL ROUNDER",
       "age": 29,
-      "image": "/images/open/33.jpg",
+      "image": "/images/open/maheshbhalerao.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -578,7 +578,7 @@
       "name": "IMRAN KHAN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/34.jpg",
+      "image": "/images/open/imarankhan.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -588,7 +588,7 @@
       "name": "SAYYED AKRAM",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/35.jpg",
+      "image": "/images/open/sayyadakram.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -609,16 +609,6 @@
       "speciality": "ALL ROUNDER",
       "age": 30,
       "image": "/images/open/37.jpg",
-      "sold": false,
-      "gifPlayed": false
-    }
-    ,
-    {
-      "id": 65,
-      "name": "SAYYED AKRAM",
-      "speciality": "BATSMAN",
-      "age": 28,
-      "image": "/images/open/38.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -658,7 +648,7 @@
       "name": "IKRAM SHAIKH",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/42.jpg",
+      "image": "/images/open/ikram.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -688,7 +678,7 @@
       "name": "NADEEM SHAIKH",
       "speciality": "BATSMAN",
       "age": 25,
-      "image": "/images/open/45.jpg",
+      "image": "/images/open/nadeemshaikh.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -708,7 +698,7 @@
       "name": "SHAIKH IMRAN",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/47.jpg",
+      "image": "/images/open/shaikhimran.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -728,7 +718,7 @@
       "name": "SANTOSH MULEKAR",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/49.jpg",
+      "image": "/images/open/santoshmulekar.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -818,7 +808,7 @@
       "name": "MOHSIN MAMA",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/58.jpg",
+      "image": "/images/open/mohsinmama.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -828,7 +818,7 @@
       "name": "SHAIKH USMAAN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/59.jpg",
+      "image": "/images/open/shaikhusman.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -848,7 +838,7 @@
       "name": "AYAZ BHAIYAA",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/61.jpg",
+      "image": "/images/open/ayazbhaiya.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -858,7 +848,7 @@
       "name": "SHAKIL AHEMAD",
       "speciality": "BATSMAN",
       "age": 26,
-      "image": "/images/open/62.jpg",
+      "image": "/images/open/shakeelahemad.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -898,7 +888,7 @@
       "name": "DEEPAK BHUJANGE",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/66.jpg",
+      "image": "/images/open/deepakbhujange.jpg",
       "sold": false,
       "gifPlayed": false
     }
@@ -918,7 +908,7 @@
       "name": "MOHD. WASIM",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/68.jpg",
+      "image": "/images/open/mohd.wasim.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -928,7 +918,7 @@
       "name": "MOHD JAVED GURU",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/69.jpg",
+      "image": "/images/open/javedguru.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -948,7 +938,7 @@
       "name": "SHAIKH MUZAMMIL",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/71.jpg",
+      "image": "/images/open/shaikhmuzammil.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -978,7 +968,7 @@
       "name": "AREF PATEL",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/74.jpg",
+      "image": "/images/open/arefpatel.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -988,7 +978,7 @@
       "name": "SHAIKH TALEB",
       "speciality": "BATSMAN",
       "age": 24,
-      "image": "/images/open/75.jpg",
+      "image": "/images/open/shaikhtaleb.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -998,7 +988,7 @@
       "name": "SHAIKH SAJED",
       "speciality": "BATSMAN",
       "age": 30,
-      "image": "/images/open/76.jpg",
+      "image": "/images/open/shaikhsajed.jpeg",
       "sold": false,
       "gifPlayed": false
     }
@@ -1008,7 +998,7 @@
       "name": "SHAFIQUE PATHAN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/77.jpg",
+      "image": "/images/open/shafiquepathan.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1026,7 +1016,7 @@
       "name": "PARWEZ SATHI",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -1035,7 +1025,7 @@
       "name": "MOHOMMAD IRFAN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/mohammadirfan.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1044,7 +1034,7 @@
       "name": "LAIQUE MAMU",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -1053,7 +1043,7 @@
       "name": "MIRZA ADNAN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/mirzaadnan.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1062,7 +1052,7 @@
       "name": "WASIM AB",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -1071,7 +1061,7 @@
       "name": "SHAIKH ZUBAIR",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -1080,7 +1070,7 @@
       "name": "AJAZ BHAI BHARAT",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "",
       "sold": false,
       "gifPlayed": false
     },
@@ -1089,7 +1079,7 @@
       "name": "JAMEEL CHIPPI",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/jamilchippi.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1098,7 +1088,7 @@
       "name": "SHAIKH NAVEED",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shaikhnaveed.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1107,7 +1097,7 @@
       "name": "AJAZ SHAIKH",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shaikhajaz.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1116,7 +1106,7 @@
       "name": "ASIF ASLAM SHAIKH",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/asifaslamshaikh.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1125,7 +1115,7 @@
       "name": "VILAAS",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/vilas.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1134,7 +1124,7 @@
       "name": "SHAIKH FASIH",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shaikhfasih.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1143,7 +1133,7 @@
       "name": "SHOAIB KHOKAR",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shoaibkhokar.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1152,7 +1142,7 @@
       "name": "SHAIKH MATEEN",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shaikhmatin.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1161,7 +1151,7 @@
       "name": "Sayyed Nishu",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/U19/7.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1170,16 +1160,16 @@
       "name": "MASHRAF BAIG",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/mashrafbaig.jpeg",
       "sold": false,
       "gifPlayed": false
     },
     {
       "id": 123,
-      "name": "SHAIKH SHARUK(SONU)",
+      "name": "SHAIKH SHAHRUK(SONU)",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/shahruksonu.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1188,7 +1178,7 @@
       "name": "SAJID BHAI",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/sajedbhai.jpeg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1197,7 +1187,16 @@
       "name": "AZEEM PATEL",
       "speciality": "ALL ROUNDER",
       "age": 30,
-      "image": "/images/open/79.jpeg",
+      "image": "/images/open/azeempatel.jpeg",
+      "sold": false,
+      "gifPlayed": false
+    },
+    {
+      "id": 126,
+      "name": "SHAIKH GALEB",
+      "speciality": "ALL ROUNDER",
+      "age": 30,
+      "image": "/images/open/galeb.jpg",
       "sold": false,
       "gifPlayed": false
     },
