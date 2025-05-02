@@ -98,7 +98,7 @@ const currentPlayer = filteredPlayers[currentIndex];
       <div className="header-section">
         <img src="/images/SPLlogo.png" alt="SPL Logo" className="spl-logo" />
         <h1>
-          <span style={{ fontWeight: "bold", color: "yellow", margin:'0 10px 0' }}>IMRAN KHANSAHAB</span>{" "}
+          <span style={{ fontWeight: "bold", color: "yellow", margin:'0 10px 0' }}>HW</span>{" "}
           PRESENTS &nbsp; <span className="spl">SPL SEASON-6</span>
         </h1>
       </div>
