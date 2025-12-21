@@ -1,0 +1,192 @@
+/* Auction Manager Styles */
+
+.auction-manager-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.auction-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.auction-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #545b62;
+}
+
+/* Auctions List */
+.auctions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.no-auctions {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    color: #666;
+}
+
+/* Auction Card */
+.auction-card {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.2s;
+}
+
+.auction-card.active {
+    border-color: #007bff;
+    background: #f0f8ff;
+}
+
+.auction-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.auction-info {
+    flex: 1;
+}
+
+.radio-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"] {
+    margin-top: 4px;
+    cursor: pointer;
+}
+
+.auction-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 20px;
+    color: #1a1a1a;
+}
+
+.season {
+    font-size: 14px;
+    color: #666;
+    margin-right: 10px;
+}
+
+.active-badge {
+    display: inline-block;
+    background: #28a745;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.auction-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.auction-card-body {
+    border-top: 1px solid #e0e0e0;
+    padding-top: 16px;
+}
+
+.welcome-text {
+    color: #555;
+    font-size: 14px;
+    margin: 0 0 16px 0;
+    font-style: italic;
+}
+
+.btn-manage-players {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-manage-players:hover {
+    background: #0056b3;
+}
+
+/* Form */
+.auction-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.auction-form textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.auction-form textarea:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .auction-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .auction-card-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .auction-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

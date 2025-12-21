@@ -1,0 +1,73 @@
+/* Current Player Styling */
+.auction-player-item.current {
+    background: #e3f2fd !important;
+    border-color: #2196f3 !important;
+    border-width: 3px !important;
+}
+
+.current-badge {
+    background: #2196f3;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.btn-current {
+    background: #2196f3;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-current:hover:not(:disabled) {
+    background: #1976d2;
+}
+
+.btn-current:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* Keyboard Hint */
+.keyboard-hints {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 1000;
+}
+
+.keyboard-hints p {
+    margin: 0 0 4px 0;
+}
+
+.keyboard-hints kbd {
+    background: #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+}

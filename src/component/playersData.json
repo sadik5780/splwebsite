@@ -6,7 +6,7 @@
       "name": "ANAS  PATHAN",
       "speciality": "BATSAMAN ",
       "age": 16,
-      "image": "/images/U16/1.jpg",
+      "image": "/images/U16/anaspathan.jpg",
       "sold": false,
       "gifPlayed": false
     },
@@ -1277,6 +1277,15 @@
       "speciality": "Batsman",
       "age": 40,
       "image": "/images/open/waqim.jpg",
+      "sold": false,
+      "gifPlayed": false
+    },
+    {
+      "id": 135,
+      "name": "SHAIKH AZHAR",
+      "speciality": "Batsman",
+      "age": 40,
+      "image": "/images/open/shaikhazhar.jpeg",
       "sold": false,
       "gifPlayed": false
     },
