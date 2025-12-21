@@ -18,7 +18,7 @@ ON auction_players(auction_id, is_current)
 WHERE is_current = TRUE;
 
 -- 5. VERIFY COLUMNS
-SELECT column_name, data_type, column_default 
+SELECT column_name, data_type, column_default  
 FROM information_schema.columns 
 WHERE table_name = 'auctions' 
 AND column_name IN ('is_locked');
