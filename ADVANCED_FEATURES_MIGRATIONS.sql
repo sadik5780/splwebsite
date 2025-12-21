@@ -16,7 +16,7 @@ ADD COLUMN IF NOT EXISTS is_removed BOOLEAN DEFAULT FALSE;
 CREATE INDEX IF NOT EXISTS idx_auction_players_current 
 ON auction_players(auction_id, is_current) 
 WHERE is_current = TRUE;
-
+ 
 -- 5. VERIFY COLUMNS
 SELECT column_name, data_type, column_default  
 FROM information_schema.columns 
