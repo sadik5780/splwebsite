@@ -7,6 +7,7 @@ import {
     deleteAuction,
 } from '../services/auctionService';
 import '../styles/AuctionManager.css';
+import '../styles/AuctionManagerButtons.css';
 
 const AuctionManager = () => {
     const [auctions, setAuctions] = useState([]);
@@ -204,6 +205,18 @@ const AuctionManager = () => {
                             >
                                 Manage Players →
                             </button>
+                            <a
+                                href={`#auction-teams?auctionId=${auction.id}`}
+                                className="btn-teams"
+                            >
+                                Teams
+                            </a>
+                            <a
+                                href={`#auction-overview?auctionId=${auction.id}`}
+                                className="btn-overview"
+                            >
+                                Overview
+                            </a>
                         </div>
                     </div>
                 ))}

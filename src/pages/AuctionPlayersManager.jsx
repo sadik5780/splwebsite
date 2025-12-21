@@ -10,9 +10,11 @@ import {
     softRemovePlayer,
 } from '../services/auctionService';
 import { fetchAllPlayers } from '../services/playersService';
+import { fetchTeamsByAuction, assignPlayerToTeam, removePlayerFromTeam } from '../services/auctionTeamsService';
 import '../styles/AuctionPlayersManager.css';
 import '../styles/AuctionPlayersSearch.css';
 import '../styles/AuctionCurrentPlayer.css';
+import '../styles/TeamSelect.css';
 
 const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
     // Use prop first, then hash, then localStorage
@@ -26,6 +28,7 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
     const [auction, setAuction] = useState(null);
     const [allPlayers, setAllPlayers] = useState([]);
     const [auctionPlayers, setAuctionPlayers] = useState([]);
+    const [teams, setTeams] = useState([]);
     const [selectedAgeGroup, setSelectedAgeGroup] = useState('Under 16');
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
@@ -53,6 +56,10 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
             // Load auction players
             const apPlayers = await getAuctionPlayers(auctionId);
             setAuctionPlayers(apPlayers);
+
+            // Load teams
+            const auctionTeams = await fetchTeamsByAuction(auctionId);
+            setTeams(auctionTeams);
 
             setError(null);
         } catch (err) {
@@ -190,6 +197,23 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
             setError(null);
         } catch (err) {
             setError('Failed to soft remove player: ' + err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleTeamAssign = async (auctionPlayerId, teamId) => {
+        try {
+            setLoading(true);
+            if (teamId) {
+                await assignPlayerToTeam(auctionPlayerId, teamId);
+            } else {
+                await removePlayerFromTeam(auctionPlayerId);
+            }
+            await loadData();
+            setError(null);
+        } catch (err) {
+            setError('Failed to assign team: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -379,6 +403,22 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
                                                     </div>
 
                                                     <div className="player-actions">
+                                                        {!ap.is_reserved && (
+                                                            <div className="team-select">
+                                                                <select
+                                                                    value={ap.team_id || ''}
+                                                                    onChange={(e) => handleTeamAssign(ap.id, e.target.value || null)}
+                                                                    disabled={loading}
+                                                                >
+                                                                    <option value="">No Team</option>
+                                                                    {teams.map(team => (
+                                                                        <option key={team.id} value={team.id}>
+                                                                            {team.team_name}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            </div>
+                                                        )}
                                                         <button
                                                             onClick={() => handleSetCurrent(ap.player_id)}
                                                             className="btn-current"
