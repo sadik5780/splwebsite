@@ -169,7 +169,7 @@ export const addPlayerToAuction = async (auctionId, playerId, ageGroup) => {
 
         const { data, error } = await supabase
             .from('auction_players')
-            .insert([{
+            .upsert([{
                 auction_id: auctionId,
                 player_id: playerId,
                 age_group: ageGroup,
@@ -177,7 +177,7 @@ export const addPlayerToAuction = async (auctionId, playerId, ageGroup) => {
                 is_reserved: false,
                 is_current: false,
                 is_removed: false
-            }])
+            }], { onConflict: 'auction_id, player_id' })
             .select();
 
         if (error) throw error;

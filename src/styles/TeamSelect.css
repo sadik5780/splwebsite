@@ -1,17 +1,1 @@
-.team-select {
-    margin-bottom: 8px;
-}
-
-.team-select select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 13px;
-    background: white;
-}
-
-.team-select select:focus {
-    outline: none;
-    border-color: #007bff;
-}
+/* Styles moved to AuctionPlayersManager.css */
