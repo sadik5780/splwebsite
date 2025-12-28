@@ -10,7 +10,6 @@ const PaymentRequired = () => {
             fontFamily: 'Segoe UI, Tahoma, sans-serif',
             fontSize: '75%',
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             paddingTop: '10vh',
             boxSizing: 'border-box'
