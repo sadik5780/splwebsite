@@ -1,46 +1,48 @@
+import { supabase } from '../lib/supabase';
+
 /**
- * Upload player photo to Cloudflare R2 via Vercel serverless function
+ * Upload player photo directly to Supabase Storage
  * @param {File} file - The image file to upload
  * @returns {Promise<{photo_filename: string, photo_url: string}>}
  */
 export const uploadPlayerPhoto = async (file) => {
     try {
-        const formData = new FormData();
-        formData.append('photo', file);
+        console.log('📤 Uploading photo to Supabase Storage...');
 
-        console.log('📤 Uploading photo to R2...');
+        // Generate unique filename with timestamp
+        const timestamp = Date.now();
+        const fileExt = file.name.split('.').pop();
+        const photo_filename = `${timestamp}.${fileExt}`;
 
-        const response = await fetch('/api/upload-player-photo', {
-            method: 'POST',
-            body: formData,
-        });
+        // Upload to Supabase Storage
+        const { data, error } = await supabase.storage
+            .from('player-photos')
+            .upload(photo_filename, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
 
-        // Check if we're in local dev and API is not available
-        if (response.status === 404) {
-            console.warn('⚠️ API endpoint not found - Using local development mock');
-            console.warn('📝 Note: Image uploads only work on Vercel deployment');
-
-            // Mock response for local development
-            const mockFilename = `${Date.now()}_${file.name}`;
-            const mockUrl = URL.createObjectURL(file); // Local blob URL for preview
-
-            return {
-                success: true,
-                photo_filename: mockFilename,
-                photo_url: mockUrl,
-            };
+        if (error) {
+            console.error('❌ Supabase upload error:', error);
+            throw error;
         }
 
-        const result = await response.json();
+        // Get public URL
+        const { data: urlData } = supabase.storage
+            .from('player-photos')
+            .getPublicUrl(photo_filename);
 
-        if (!result.success) {
-            throw new Error(result.error || 'Upload failed');
-        }
+        const photo_url = urlData.publicUrl;
 
-        console.log('✅ Photo uploaded:', result.photo_filename);
-        return result;
+        console.log('✅ Photo uploaded successfully:', photo_filename);
+
+        return {
+            success: true,
+            photo_filename,
+            photo_url,
+        };
     } catch (error) {
         console.error('❌ Upload error:', error);
-        throw error;
+        throw new Error(`Failed to upload photo: ${error.message}`);
     }
 };

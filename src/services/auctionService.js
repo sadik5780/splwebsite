@@ -5,7 +5,7 @@ import { supabase } from '../lib/supabase';
 /**
  * Create a new auction
  */
-export const createAuction = async (auctionName, auctionSeason, welcomeText = 'Welcome to SPL Season 6 Auction Hall') => {
+export const createAuction = async (auctionName, auctionSeason, welcomeText = 'Welcome to SPL Season 6 Auction Hall', basePointsPerTeam = 1000) => {
     try {
         const { data, error } = await supabase
             .from('auctions')
@@ -13,6 +13,7 @@ export const createAuction = async (auctionName, auctionSeason, welcomeText = 'W
                 auction_name: auctionName,
                 auction_season: auctionSeason,
                 welcome_text: welcomeText,
+                base_points_per_team: basePointsPerTeam,
                 is_active: false,
                 is_locked: false
             }])
@@ -372,6 +373,239 @@ export const getActiveAuctionSlides = async () => {
         return slides;
     } catch (error) {
         console.error('Error getting active auction slides:', error);
+        throw error;
+    }
+};
+
+// ====== AUCTION POINTS SYSTEM ======
+
+/**
+ * Update base points per team for an auction
+ */
+export const updateAuctionBasePoints = async (auctionId, basePoints) => {
+    try {
+        const { data, error } = await supabase
+            .from('auctions')
+            .update({ base_points_per_team: basePoints })
+            .eq('id', auctionId)
+            .select();
+
+        if (error) throw error;
+        console.log('✅ Updated base points to:', basePoints);
+        return data[0];
+    } catch (error) {
+        console.error('Error updating base points:', error);
+        throw error;
+    }
+};
+
+/**
+ * Get remaining points for each team
+ * Returns: [{ team_id, team_name, total_points, spent_points, remaining_points }]
+ */
+export const getTeamRemainingPoints = async (auctionId) => {
+    try {
+        // Get auction base points
+        const { data: auction, error: auctionError } = await supabase
+            .from('auctions')
+            .select('base_points_per_team')
+            .eq('id', auctionId)
+            .single();
+
+        if (auctionError) throw auctionError;
+
+        const basePoints = auction.base_points_per_team || 0;
+
+        // Get teams for this auction
+        const { data: teams, error: teamsError } = await supabase
+            .from('auction_teams')
+            .select('*')
+            .eq('auction_id', auctionId);
+
+        if (teamsError) throw teamsError;
+
+        // Get sold points per team
+        const { data: soldPlayers, error: playersError } = await supabase
+            .from('auction_players')
+            .select('team_id, sold_points')
+            .eq('auction_id', auctionId)
+            .not('team_id', 'is', null)
+            .not('sold_points', 'is', null);
+
+        if (playersError) throw playersError;
+
+        // Calculate spent points and player count per team
+        const spentByTeam = {};
+        const playerCountByTeam = {};
+        soldPlayers.forEach(player => {
+            if (!spentByTeam[player.team_id]) {
+                spentByTeam[player.team_id] = 0;
+                playerCountByTeam[player.team_id] = 0;
+            }
+            spentByTeam[player.team_id] += player.sold_points;
+            playerCountByTeam[player.team_id] += 1;
+        });
+
+        // Build result
+        const result = teams.map(team => ({
+            team_id: team.id,
+            team_name: team.team_name,
+            total_points: basePoints,
+            spent_points: spentByTeam[team.id] || 0,
+            remaining_points: basePoints - (spentByTeam[team.id] || 0),
+            players_bought: playerCountByTeam[team.id] || 0,
+            players_remaining: 11 - (playerCountByTeam[team.id] || 0)
+        }));
+
+        return result;
+    } catch (error) {
+        console.error('Error getting team remaining points:', error);
+        throw error;
+    }
+};
+
+/**
+ * Sell a player to a team
+ */
+export const sellPlayer = async ({ auctionPlayerId, teamId, soldPoints }) => {
+    try {
+        // Validate sold points is positive
+        if (soldPoints <= 0) {
+            throw new Error('Sold points must be greater than 0');
+        }
+
+        // Get auction player details
+        const { data: auctionPlayer, error: apError } = await supabase
+            .from('auction_players')
+            .select('*, auctions(*)')
+            .eq('id', auctionPlayerId)
+            .single();
+
+        if (apError) throw apError;
+
+        // Check if player is reserved
+        if (auctionPlayer.is_reserved) {
+            throw new Error('Reserved players cannot be sold');
+        }
+
+        // Get team remaining points
+        const teamPoints = await getTeamRemainingPoints(auctionPlayer.auction_id);
+        const team = teamPoints.find(t => t.team_id === teamId);
+
+        if (!team) {
+            throw new Error('Team not found');
+        }
+
+        // Validate enough points
+        if (soldPoints > team.remaining_points) {
+            throw new Error(`Insufficient points. Team has ${team.remaining_points} points remaining`);
+        }
+
+        // Update player
+        const { data, error } = await supabase
+            .from('auction_players')
+            .update({
+                team_id: teamId,
+                sold_points: soldPoints
+            })
+            .eq('id', auctionPlayerId)
+            .select();
+
+        if (error) throw error;
+
+        console.log('✅ Player sold for', soldPoints, 'points');
+        return data[0];
+    } catch (error) {
+        console.error('Error selling player:', error);
+        throw error;
+    }
+};
+
+/**
+ * Unsold a player (undo sale)
+ */
+export const unsoldPlayer = async (auctionPlayerId) => {
+    try {
+        const { data, error } = await supabase
+            .from('auction_players')
+            .update({
+                sold_points: null
+            })
+            .eq('id', auctionPlayerId)
+            .select();
+
+        if (error) throw error;
+
+        console.log('✅ Player unsold');
+        return data[0];
+    } catch (error) {
+        console.error('Error unselling player:', error);
+        throw error;
+    }
+};
+
+/**
+ * Get auction base points
+ */
+export const getAuctionBasePoints = async (auctionId) => {
+    try {
+        const { data, error } = await supabase
+            .from('auctions')
+            .select('base_points_per_team')
+            .eq('id', auctionId)
+            .single();
+
+        if (error) throw error;
+        return data.base_points_per_team || 0;
+    } catch (error) {
+        console.error('Error getting auction base points:', error);
+        throw error;
+    }
+};
+
+/**
+ * Get sold players grouped by team
+ */
+export const getSoldPlayersByTeam = async (auctionId) => {
+    try {
+        const { data, error } = await supabase
+            .from('auction_players')
+            .select(`
+                *,
+                players (*),
+                auction_teams (*)
+            `)
+            .eq('auction_id', auctionId)
+            .not('team_id', 'is', null)
+            .not('sold_points', 'is', null)
+            .order('sold_points', { ascending: false });
+
+        if (error) throw error;
+
+        // Group by team
+        const groupedByTeam = {};
+        data.forEach(player => {
+            const teamId = player.team_id;
+            if (!groupedByTeam[teamId]) {
+                groupedByTeam[teamId] = {
+                    team_id: teamId,
+                    team_name: player.auction_teams?.team_name || 'Unknown',
+                    players: [],
+                    total_spent: 0
+                };
+            }
+            groupedByTeam[teamId].players.push({
+                player_name: player.players?.full_name,
+                role: player.players?.role,
+                sold_points: player.sold_points,
+                age_group: player.age_group
+            });
+            groupedByTeam[teamId].total_spent += player.sold_points;
+        });
+
+        return Object.values(groupedByTeam);
+    } catch (error) {
+        console.error('Error getting sold players by team:', error);
         throw error;
     }
 };

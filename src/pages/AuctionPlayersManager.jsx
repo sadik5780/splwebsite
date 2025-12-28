@@ -8,9 +8,12 @@ import {
     fetchAllAuctions,
     setPlayerAsCurrent,
     softRemovePlayer,
+    sellPlayer,
+    unsoldPlayer,
 } from '../services/auctionService';
 import { fetchAllPlayers } from '../services/playersService';
 import { fetchTeamsByAuction, assignPlayerToTeam, removePlayerFromTeam } from '../services/auctionTeamsService';
+import { exportAuctionPlayersToExcel, exportAuctionPlayersToPDF } from '../services/exportService';
 import '../styles/AuctionPlayersManager.css';
 import '../styles/AuctionPlayersSearch.css';
 import '../styles/AuctionCurrentPlayer.css';
@@ -35,6 +38,9 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
     const [error, setError] = useState(null);
 
     const [activeTab, setActiveTab] = useState('Under 16');
+    const [sellingPlayer, setSellingPlayer] = useState(null);
+    const [sellPoints, setSellPoints] = useState('');
+    const [teamPoints, setTeamPoints] = useState([]);
 
     useEffect(() => {
         if (auctionId) {
@@ -62,6 +68,12 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
             // Load teams
             const auctionTeams = await fetchTeamsByAuction(auctionId);
             setTeams(auctionTeams);
+
+            // Load team points
+            const { getTeamRemainingPoints } = await import('../services/auctionService');
+            const points = await getTeamRemainingPoints(auctionId);
+            setTeamPoints(points);
+            console.log('✅ Team points updated:', points);
 
             setError(null);
         } catch (err) {
@@ -222,6 +234,58 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
         }
     };
 
+    const handleSellPlayer = (auctionPlayer) => {
+        setSellingPlayer(auctionPlayer);
+        setSellPoints(auctionPlayer.sold_points || '');
+    };
+
+    const handleCompleteSale = async (player, points) => {
+        if (!player || !player.team_id) {
+            setError('Please select a team first');
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const pointsInt = parseInt(points);
+            if (isNaN(pointsInt) || pointsInt <= 0) {
+                throw new Error('Please enter a valid positive number for sold points');
+            }
+
+            await sellPlayer({
+                auctionPlayerId: player.id,
+                teamId: player.team_id,
+                soldPoints: pointsInt
+            });
+
+            await loadData();
+            setSellingPlayer(null);
+            setSellPoints('');
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleUnsoldPlayer = async (auctionPlayerId) => {
+        if (!window.confirm('Unsold this player? This will remove the sold points.')) {
+            return;
+        }
+
+        try {
+            setLoading(true);
+            await unsoldPlayer(auctionPlayerId);
+            await loadData();
+            setError(null);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const getAvailablePlayers = () => {
         const auctionPlayerIds = auctionPlayers.map(ap => ap.player_id);
 
@@ -280,16 +344,61 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
     return (
         <div className="auction-players-container">
             {/* Header */}
-            <div className="auction-players-header">
+            <div className="players-manager-header" style={{ marginBottom: '20px' }}>
                 <div>
                     <h1>Manage Players</h1>
-                    <p className="auction-name">
-                        {auction?.auction_name || 'Loading...'}
-                    </p>
+                    {auction && <p className="auction-subtitle">{auction.auction_name} - {auction.auction_season}</p>}
                 </div>
-                <div className="header-actions">
-                    <a href="#auction-manager" className="btn-secondary">Back</a>
-                    <a href="#slider" className="btn-primary">Open Slider</a>
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <button
+                        onClick={() => {
+                            const nonReservedPlayers = auctionPlayers.filter(ap => !ap.is_reserved);
+                            exportAuctionPlayersToExcel(nonReservedPlayers, `${auction?.auction_name || 'auction'}_players.xlsx`);
+                        }}
+                        disabled={auctionPlayers.length === 0}
+                        style={{
+                            padding: '10px 20px',
+                            background: '#10b981',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: auctionPlayers.length === 0 ? 'not-allowed' : 'pointer',
+                            opacity: auctionPlayers.length === 0 ? 0.5 : 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}
+                    >
+                        <span>📊</span> Export Excel
+                    </button>
+                    <button
+                        onClick={() => {
+                            const nonReservedPlayers = auctionPlayers.filter(ap => !ap.is_reserved);
+                            exportAuctionPlayersToPDF(nonReservedPlayers, `${auction?.auction_name || 'auction'}_players.pdf`);
+                        }}
+                        disabled={auctionPlayers.length === 0}
+                        style={{
+                            padding: '10px 20px',
+                            background: '#ef4444',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: auctionPlayers.length === 0 ? 'not-allowed' : 'pointer',
+                            opacity: auctionPlayers.length === 0 ? 0.5 : 1,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}
+                    >
+                        <span>📄</span> Export PDF
+                    </button>
+                    <button onClick={() => window.history.back()} className="btn-back">
+                        ← Back to Auction
+                    </button>
                 </div>
             </div>
 
@@ -302,6 +411,40 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
             {loading && <div className="loading-overlay">Updating...</div>}
 
             <div className="players-manager-layout">
+
+                {/* Team Points Panel */}
+                {teamPoints.length > 0 && (
+                    <div style={{ background: 'white', borderRadius: '16px', padding: '20px', marginBottom: '24px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}>
+                        <h3 style={{ margin: '0 0 16px 0', fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>Team Points</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+                            {teamPoints.map(team => (
+                                <div key={team.team_id} style={{ padding: '12px 16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                                    <div style={{ fontSize: '14px', fontWeight: '600', color: '#475569', marginBottom: '8px' }}>{team.team_name}</div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '4px', padding: '6px', background: '#ffffff', borderRadius: '4px' }}>
+                                        <span style={{ color: '#64748b', fontWeight: '600' }}>Players Bought:</span>
+                                        <span style={{ fontWeight: '700', color: (team.players_bought || 0) >= 11 ? '#16a34a' : '#2563eb' }}>
+                                            {team.players_bought || 0}/11 ({(team.players_remaining !== undefined ? team.players_remaining : 11)} left)
+                                        </span>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                        <span style={{ color: '#64748b' }}>Total:</span>
+                                        <span style={{ fontWeight: '600', color: '#1e293b' }}>{team.total_points}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                        <span style={{ color: '#64748b' }}>Spent:</span>
+                                        <span style={{ fontWeight: '600', color: '#dc2626' }}>{team.spent_points}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', marginTop: '4px', paddingTop: '6px', borderTop: '1px solid #e2e8f0' }}>
+                                        <span style={{ fontWeight: '600', color: '#475569' }}>Remaining:</span>
+                                        <span style={{ fontWeight: '700', color: team.remaining_points > 0 ? '#16a34a' : '#dc2626' }}>{team.remaining_points}</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* 1. Available Players Section (Top) */}
                 <div className="available-players-section">
@@ -421,12 +564,40 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
                                             <select
                                                 value={ap.team_id || ''}
                                                 onChange={(e) => handleTeamAssign(ap.id, e.target.value || null)}
+                                                disabled={ap.sold_points > 0}
                                             >
                                                 <option value="">Select Team...</option>
                                                 {teams.map(team => (
                                                     <option key={team.id} value={team.id}>{team.team_name}</option>
                                                 ))}
                                             </select>
+                                        </div>
+                                    )}
+
+                                    {/* Inline Sell Controls */}
+                                    {ap.team_id && !ap.sold_points && !ap.is_reserved && (
+                                        <div style={{ marginTop: '12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                            <input
+                                                type="number"
+                                                placeholder="Sold points"
+                                                min="1"
+                                                id={`sell-input-${ap.id}`}
+                                                style={{ flex: 1, padding: '8px', border: '1px solid #e2e8f0', borderRadius: '6px', fontSize: '13px' }}
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    const input = document.getElementById(`sell-input-${ap.id}`);
+                                                    const points = parseInt(input.value);
+                                                    if (points > 0) {
+                                                        handleCompleteSale(ap, points);
+                                                    } else {
+                                                        setError('Please enter valid points');
+                                                    }
+                                                }}
+                                                style={{ padding: '8px 16px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '6px', fontSize: '13px', fontWeight: '600', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                                            >
+                                                Sell
+                                            </button>
                                         </div>
                                     )}
 
@@ -470,6 +641,22 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
                                         </button>
                                     </div>
 
+                                    {ap.sold_points && (
+                                        <div style={{ marginTop: '10px', padding: '8px', background: '#dcfce7', borderRadius: '6px', textAlign: 'center', border: '1px solid #86efac' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <span style={{ fontSize: '13px', color: '#16a34a', fontWeight: '700' }}>
+                                                    ✓ SOLD for {ap.sold_points} points
+                                                </span>
+                                                <button
+                                                    onClick={() => handleUnsoldPlayer(ap.id)}
+                                                    style={{ padding: '4px 12px', background: '#dc2626', color: 'white', border: 'none', borderRadius: '4px', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }}
+                                                >
+                                                    Unsold
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+
                                 </div>
                             ))}
                         </div>
@@ -477,6 +664,39 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
                 </div>
 
             </div>
+
+            {/* Sell Player Modal */}
+            {sellingPlayer && (
+                <div className="modal-overlay" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onClick={() => setSellingPlayer(null)}>
+                    <div style={{ background: 'white', padding: '24px', borderRadius: '12px', maxWidth: '400px', width: '100%' }} onClick={(e) => e.stopPropagation()}>
+                        <h2 style={{ marginTop: 0 }}>Sell Player</h2>
+                        <p style={{ color: '#64748b' }}>
+                            {sellingPlayer.players.full_name} → {teams.find(t => t.id === sellingPlayer.team_id)?.team_name}
+                        </p>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>
+                                Sold Points *
+                            </label>
+                            <input
+                                type="number"
+                                value={sellPoints}
+                                onChange={(e) => setSellPoints(e.target.value)}
+                                placeholder="Enter sold points"
+                                min="1"
+                                style={{ width: '100%', padding: '10px', border: '1px solid #e2e8f0', borderRadius: '6px' }}
+                            />
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button onClick={() => setSellingPlayer(null)} style={{ flex: 1, padding: '10px', background: '#f1f5f9', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+                                Cancel
+                            </button>
+                            <button onClick={handleCompleteSale} disabled={loading} style={{ flex: 1, padding: '10px', background: '#16a34a', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}>
+                                {loading ? 'Selling...' : 'Confirm Sale'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

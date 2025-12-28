@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getSoldPlayersByTeam, getUnsoldPlayersByAgeGroup } from '../services/auctionTeamsService';
-import { fetchAllAuctions } from '../services/auctionService';
+import { fetchAllAuctions, getAuctionPlayers, getTeamRemainingPoints } from '../services/auctionService';
 import '../styles/AuctionOverview.css';
 
 const AuctionOverview = ({ auctionId: propAuctionId }) => {
@@ -13,6 +13,7 @@ const AuctionOverview = ({ auctionId: propAuctionId }) => {
     const [auction, setAuction] = useState(null);
     const [soldPlayers, setSoldPlayers] = useState([]);
     const [unsoldPlayers, setUnsoldPlayers] = useState([]);
+    const [teamPoints, setTeamPoints] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -29,11 +30,18 @@ const AuctionOverview = ({ auctionId: propAuctionId }) => {
             const currentAuction = auctions.find(a => a.id === auctionId);
             setAuction(currentAuction);
 
-            const sold = await getSoldPlayersByTeam(auctionId);
-            setSoldPlayers(sold);
+            // Load sold players grouped by team
+            const soldData = await getSoldPlayersByTeam(auctionId);
+            setSoldPlayers(soldData);
 
-            const unsold = await getUnsoldPlayersByAgeGroup(auctionId);
-            setUnsoldPlayers(unsold);
+            // Load all auction players for unsold list
+            const allPlayers = await getAuctionPlayers(auctionId);
+            const unsoldList = allPlayers.filter(ap => !ap.sold_points || ap.sold_points === 0);
+            setUnsoldPlayers(unsoldList);
+
+            // Load team points
+            const points = await getTeamRemainingPoints(auctionId);
+            setTeamPoints(points);
 
             setError(null);
         } catch (err) {
@@ -125,6 +133,11 @@ const AuctionOverview = ({ auctionId: propAuctionId }) => {
                                                     <div className="player-details">
                                                         <div className="player-name">{ap.players.full_name}</div>
                                                         <div className="player-meta">{ap.players.role} • {ap.age_group}</div>
+                                                        {ap.sold_points && (
+                                                            <div style={{ marginTop: '6px', padding: '4px 8px', background: '#dcfce7', borderRadius: '4px', fontSize: '12px', fontWeight: '600', color: '#16a34a', display: 'inline-block' }}>
+                                                                {ap.sold_points} points
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             ))}

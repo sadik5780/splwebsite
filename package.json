@@ -7,11 +7,14 @@
     "@supabase/supabase-js": "^2.89.0",
     "cra-template": "1.2.0",
     "framer-motion": "^11.13.5",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "multiparty": "^4.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-image-crop": "^11.0.10",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",

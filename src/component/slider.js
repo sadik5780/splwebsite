@@ -148,8 +148,8 @@ const Slider = () => {
       <div className="header-section">
         <img src="/images/SPLlogo.png" alt="SPL Logo" className="spl-logo" />
         <h1>
-          <span style={{ fontWeight: "bold", color: "yellow", margin: '0 10px 0' }}>HW</span>{" "}
-          PRESENTS &nbsp; <span className="spl">SPL SEASON-6</span>
+          <span style={{ fontWeight: "bold", color: "yellow", margin: '0 10px 0' }}>IMRAN KHASAHAB</span>{" "}
+          PRESENTS &nbsp; <span className="spl">SPL SEASON-9</span>
         </h1>
       </div>
       <div className="search-container">
@@ -166,8 +166,8 @@ const Slider = () => {
         <span>Presented by</span> <br /> SPL
       </div>
       <div className="constant-text2">
-        Sadik Sir (Mandroid Software) -  77 0909 5899
-        <br /><span>Developer</span>
+        Developer by Sadik Sir -  77 0909 5899
+        {/* <br /><span></span> */}
       </div>
 
       <AnimatePresence mode="wait">

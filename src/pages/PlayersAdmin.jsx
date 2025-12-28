@@ -4,10 +4,11 @@ import 'react-image-crop/dist/ReactCrop.css';
 import {
     fetchAllPlayers,
     createPlayer,
-    updatePlayer,
     deletePlayer,
+    updatePlayer,
 } from '../services/playersService';
 import { uploadPlayerPhoto } from '../services/uploadService';
+import { exportPlayersToExcel, exportPlayersToPDF } from '../services/exportService';
 import '../styles/PlayersAdmin.css';
 
 const PlayersAdmin = () => {
@@ -35,11 +36,11 @@ const PlayersAdmin = () => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [imageSrc, setImageSrc] = useState(null);
     const [crop, setCrop] = useState({
-        unit: 'px',
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0,
+        unit: '%',
+        width: 50,
+        height: 50,
+        x: 25,
+        y: 25,
     });
     const [completedCrop, setCompletedCrop] = useState(null);
     const [croppedImageUrl, setCroppedImageUrl] = useState(null);
@@ -151,53 +152,92 @@ const PlayersAdmin = () => {
         }
     };
 
+    const handleEditExistingImage = () => {
+        if (editingPlayer && editingPlayer.photo_url) {
+            setImageSrc(editingPlayer.photo_url);
+            setSelectedFile(null); // No file selected, using existing URL
+            setShowCropModal(true);
+        }
+    };
+
     const getCroppedImg = (image, crop) => {
+        console.log('getCroppedImg called with crop:', crop);
+        console.log('Image dimensions:', image.width, 'x', image.height);
+        console.log('Natural dimensions:', image.naturalWidth, 'x', image.naturalHeight);
+
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
-        canvas.width = crop.width;
-        canvas.height = crop.height;
+
+        // Convert percentage to pixels if needed
+        let pixelCrop = { ...crop };
+        if (crop.unit === '%') {
+            pixelCrop = {
+                x: (crop.x / 100) * image.width,
+                y: (crop.y / 100) * image.height,
+                width: (crop.width / 100) * image.width,
+                height: (crop.height / 100) * image.height,
+                unit: 'px'
+            };
+        }
+
+        console.log('Pixel crop:', pixelCrop);
+
+        canvas.width = pixelCrop.width;
+        canvas.height = pixelCrop.height;
         const ctx = canvas.getContext('2d');
 
         ctx.drawImage(
             image,
-            crop.x * scaleX,
-            crop.y * scaleY,
-            crop.width * scaleX,
-            crop.height * scaleY,
+            pixelCrop.x * scaleX,
+            pixelCrop.y * scaleY,
+            pixelCrop.width * scaleX,
+            pixelCrop.height * scaleY,
             0,
             0,
-            crop.width,
-            crop.height
+            pixelCrop.width,
+            pixelCrop.height
         );
 
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             canvas.toBlob((blob) => {
                 if (!blob) {
-                    console.error('Canvas is empty');
+                    console.error('Canvas is empty - blob creation failed');
+                    reject(new Error('Canvas is empty'));
                     return;
                 }
-                const file = new File([blob], selectedFile.name, {
-                    type: selectedFile.type,
+                console.log('Blob created successfully, size:', blob.size);
+                const file = new File([blob], selectedFile?.name || 'cropped.jpg', {
+                    type: selectedFile?.type || 'image/jpeg',
                     lastModified: Date.now(),
                 });
+                console.log('File created:', file.name, file.size);
                 resolve(file);
-            }, selectedFile.type);
+            }, selectedFile?.type || 'image/jpeg');
         });
     };
 
     const handleSaveCrop = async () => {
+        console.log('handleSaveCrop called');
+        console.log('completedCrop:', completedCrop);
+        console.log('imgRef.current:', imgRef.current);
+
         if (!completedCrop || !imgRef.current) {
-            alert('Please crop the image first');
+            console.error('Missing completedCrop or imgRef');
             return;
         }
 
         try {
             setUploading(true);
+            console.log('Starting crop process...');
+
             const croppedFile = await getCroppedImg(imgRef.current, completedCrop);
+            console.log('Cropped file created:', croppedFile);
 
             // Upload cropped image
+            console.log('Uploading to server...');
             const uploadResult = await uploadPlayerPhoto(croppedFile);
+            console.log('Upload result:', uploadResult);
 
             // Update form data with uploaded image URLs
             setFormData(prev => ({
@@ -206,10 +246,15 @@ const PlayersAdmin = () => {
                 photo_url: uploadResult.photo_url,
             }));
 
+            console.log('Form data updated with new photo URL:', uploadResult.photo_url);
             setCroppedImageUrl(uploadResult.photo_url);
             setShowCropModal(false);
+            setImageSrc(null);
+            setSelectedFile(null);
             setError(null);
+            console.log('Crop save completed successfully');
         } catch (err) {
+            console.error('Error in handleSaveCrop:', err);
             setError('Failed to upload image: ' + err.message);
         } finally {
             setUploading(false);
@@ -220,7 +265,7 @@ const PlayersAdmin = () => {
         setShowCropModal(false);
         setImageSrc(null);
         setSelectedFile(null);
-        setCrop({ unit: 'px', width: 0, height: 0, x: 0, y: 0 });
+        setCrop({ unit: '%', width: 50, height: 50, x: 25, y: 25 });
         setCompletedCrop(null);
     };
 
@@ -250,15 +295,21 @@ const PlayersAdmin = () => {
                 photo_filename: formData.photo_filename,
                 photo_url: formData.photo_url,
             };
+            console.log('💾 Saving player data:', playerData);
 
             // Create or update
             if (editingPlayer) {
+                console.log('Updating player with ID:', editingPlayer.id);
                 await updatePlayer(editingPlayer.id, playerData);
             } else {
+                console.log('Creating new player');
                 await createPlayer(playerData);
             }
 
+            console.log('Reloading players list...');
             await loadPlayers();
+
+            // Clear form and states
             setIsFormOpen(false);
             setFormData({
                 full_name: '',
@@ -269,9 +320,12 @@ const PlayersAdmin = () => {
                 photo_filename: '',
                 photo_url: '',
             });
-            setSelectedFile(null);
-            setImageSrc(null);
+            setEditingPlayer(null);
             setCroppedImageUrl(null);
+            setImageSrc(null);
+            setSelectedFile(null);
+
+            console.log('Player saved and form reset');
         } catch (err) {
             setError(err.message);
         } finally {
@@ -298,12 +352,20 @@ const PlayersAdmin = () => {
     };
 
     return (
-        <div className="admin-container">
-            <div className="admin-header">
+        <div className="players-admin-container">
+            <div className="header-section">
                 <h1>Players Management</h1>
-                <button onClick={handleAdd} className="btn-primary">
-                    + Add Player
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button onClick={() => exportPlayersToExcel(players, 'all_players.xlsx')} className="btn-primary" disabled={players.length === 0}>
+                        📊 Export Excel
+                    </button>
+                    <button onClick={() => exportPlayersToPDF(players, 'all_players.pdf')} className="btn-primary" disabled={players.length === 0}>
+                        📄 Export PDF
+                    </button>
+                    <button onClick={handleAdd} className="btn-primary">
+                        + Add Player
+                    </button>
+                </div>
             </div>
 
             {error && (
@@ -399,24 +461,22 @@ const PlayersAdmin = () => {
                                 crop={crop}
                                 onChange={(c) => setCrop(c)}
                                 onComplete={(c) => setCompletedCrop(c)}
-                                aspect={3 / 4}
                             >
                                 <img
                                     ref={imgRef}
                                     src={imageSrc}
                                     alt="Crop preview"
-                                    style={{ maxWidth: '100%', maxHeight: '60vh' }}
+                                    crossOrigin="anonymous"
+                                    style={{ maxWidth: '100%', maxHeight: '70vh' }}
                                     onLoad={(e) => {
                                         const { width, height } = e.currentTarget;
-                                        const crop = {
-                                            unit: 'px',
-                                            width: Math.min(width * 0.8, 300),
-                                            height: Math.min(width * 0.8, 300) * (4 / 3),
-                                            x: width * 0.1,
-                                            y: height * 0.1,
-                                        };
-                                        setCrop(crop);
-                                        setCompletedCrop(crop);
+                                        setCrop({
+                                            unit: '%',
+                                            width: 50,
+                                            height: 50,
+                                            x: 25,
+                                            y: 25
+                                        });
                                     }}
                                 />
                             </ReactCrop>
@@ -470,6 +530,50 @@ const PlayersAdmin = () => {
                                 />
                             </div>
 
+                            <div className="form-group">
+                                <label>Player Photo *</label>
+
+                                {/* Show current photo when editing */}
+                                {editingPlayer && editingPlayer.photo_url && !imageSrc && (
+                                    <div style={{ marginBottom: '12px' }}>
+                                        <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px' }}>Current Photo:</div>
+                                        <img
+                                            src={editingPlayer.photo_url}
+                                            alt="Current player"
+                                            style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '8px', border: '2px solid #e2e8f0' }}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={handleEditExistingImage}
+                                            style={{
+                                                display: 'block',
+                                                marginTop: '10px',
+                                                padding: '8px 16px',
+                                                background: '#2563eb',
+                                                color: 'white',
+                                                border: 'none',
+                                                borderRadius: '6px',
+                                                cursor: 'pointer',
+                                                fontSize: '13px',
+                                                fontWeight: '600'
+                                            }}
+                                        >
+                                            ✏️ Edit Image
+                                        </button>
+                                    </div>
+                                )}
+
+                                <input
+                                    id="photo-upload-input"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handlePhotoSelect}
+                                    style={{ display: imageSrc || !editingPlayer ? 'block' : 'none' }}
+                                />
+                                {!imageSrc && !editingPlayer && (
+                                    <small>Upload a player photo (required for new players)</small>
+                                )}
+                            </div>
                             <div className="form-group">
                                 <label>Mobile</label>
                                 <input

@@ -20,6 +20,7 @@ const AuctionManager = () => {
         auction_name: '',
         auction_season: '',
         welcome_text: 'Welcome to SPL Season 6 Auction Hall',
+        base_points_per_team: 1000,
     });
 
     useEffect(() => {
@@ -46,7 +47,8 @@ const AuctionManager = () => {
             await createAuction(
                 formData.auction_name,
                 formData.auction_season,
-                formData.welcome_text
+                formData.welcome_text,
+                formData.base_points_per_team
             );
             await loadAuctions();
             setShowCreateForm(false);
@@ -54,6 +56,7 @@ const AuctionManager = () => {
                 auction_name: '',
                 auction_season: '',
                 welcome_text: 'Welcome to SPL Season 6 Auction Hall',
+                base_points_per_team: 1000,
             });
             setError(null);
         } catch (err) {
@@ -82,6 +85,7 @@ const AuctionManager = () => {
             auction_name: auction.auction_name,
             auction_season: auction.auction_season,
             welcome_text: auction.welcome_text,
+            base_points_per_team: auction.base_points_per_team || 1000,
         });
         setShowCreateForm(true);
     };
@@ -98,6 +102,7 @@ const AuctionManager = () => {
                 auction_name: '',
                 auction_season: '',
                 welcome_text: 'Welcome to SPL Season 6 Auction Hall',
+                base_points_per_team: 1000,
             });
             setError(null);
         } catch (err) {
@@ -133,6 +138,7 @@ const AuctionManager = () => {
             auction_name: '',
             auction_season: '',
             welcome_text: 'Welcome to SPL Season 6 Auction Hall',
+            base_points_per_team: 1000,
         });
     };
 
@@ -258,6 +264,18 @@ const AuctionManager = () => {
                                     rows={3}
                                     required
                                 />
+                            </div>
+
+                            <div className="form-group">
+                                <label>Base Points per Team *</label>
+                                <input
+                                    type="number"
+                                    value={formData.base_points_per_team}
+                                    onChange={(e) => setFormData({ ...formData, base_points_per_team: parseInt(e.target.value) || 0 })}
+                                    min="1"
+                                    required
+                                />
+                                <small style={{ color: '#64748b', fontSize: '12px' }}>Each team starts with this many points</small>
                             </div>
 
                             <div className="form-actions">
