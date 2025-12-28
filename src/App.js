@@ -5,9 +5,12 @@ import AuctionManager from "./pages/AuctionManager";
 import AuctionPlayersManager from "./pages/AuctionPlayersManager";
 import AuctionTeams from "./pages/AuctionTeams";
 import AuctionOverview from "./pages/AuctionOverview";
+import LocalhostNotSupported from "./pages/LocalhostNotSupported";
+import PaymentRequired from "./pages/PaymentRequired";
 import "./App.css";
 
-const App = () => {
+// Main Application Content - Rendered ONLY if checks pass
+const AppContent = () => {
   const [page, setPage] = useState('slider');
   const [auctionId, setAuctionId] = useState(null);
 
@@ -46,6 +49,24 @@ const App = () => {
       {(page === 'slider' || page === '') && <Slider />}
     </div>
   );
+};
+
+// Global Execution Control Wrapper
+const App = () => {
+  // BLOCK #1 — LOCALHOST HARD BLOCK (HIGHEST PRIORITY)
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]') {
+    return <LocalhostNotSupported />;
+  }
+
+  // BLOCK #2 — APPLICATION LOCK (PAYMENT / ACCESS CONTROL)
+  // Controlled ONLY via environment variable: REACT_APP_APP_LOCKED=true | false
+  if (process.env.REACT_APP_APP_LOCKED === 'true') {
+    return <PaymentRequired />;
+  }
+
+  // BLOCK #3 — NORMAL APPLICATION RENDERING
+  return <AppContent />;
 };
 
 export default App;

@@ -166,7 +166,7 @@ const Slider = () => {
         <span>Presented by</span> <br /> SPL
       </div>
       <div className="constant-text2">
-        Developer by Sadik Sir -  77 0909 5899
+        Developed by Sadik Sir -  77 0909 5899
         {/* <br /><span></span> */}
       </div>
 
