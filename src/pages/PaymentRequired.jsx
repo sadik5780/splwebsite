@@ -15,7 +15,7 @@ const PaymentRequired = () => {
             paddingTop: '10vh',
             boxSizing: 'border-box'
         }}>
-            <div style={{ maxWidth: '600px', width: '100%', padding: '0 24px' }}>
+            <div style={{ maxWidth: '600px', width: '100%', padding: '0 24px', boxSizing: 'border-box' }}>
                 <div style={{ marginBottom: '24px' }}>
                     <img src="/images/download.png" alt="" style={{ width: '72px', height: 'auto' }} />
                 </div>
