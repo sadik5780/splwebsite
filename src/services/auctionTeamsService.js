@@ -2,6 +2,7 @@ import { supabase } from '../lib/supabase';
 
 export const createTeam = async (auctionId, teamData) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_teams')
             .insert([{
@@ -15,13 +16,13 @@ export const createTeam = async (auctionId, teamData) => {
         if (error) throw error;
         return data[0];
     } catch (error) {
-        console.error('Error creating team:', error);
         throw error;
     }
 };
 
 export const fetchTeamsByAuction = async (auctionId) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auction_teams')
             .select('*')
@@ -31,13 +32,13 @@ export const fetchTeamsByAuction = async (auctionId) => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error fetching teams:', error);
         throw error;
     }
 };
 
 export const updateTeam = async (teamId, teamData) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_teams')
             .update(teamData)
@@ -47,13 +48,13 @@ export const updateTeam = async (teamId, teamData) => {
         if (error) throw error;
         return data[0];
     } catch (error) {
-        console.error('Error updating team:', error);
         throw error;
     }
 };
 
 export const deleteTeam = async (teamId) => {
     try {
+        if (!supabase) return;
         // First, unassign all players from this team
         await supabase
             .from('auction_players')
@@ -68,13 +69,13 @@ export const deleteTeam = async (teamId) => {
 
         if (error) throw error;
     } catch (error) {
-        console.error('Error deleting team:', error);
         throw error;
     }
 };
 
 export const assignPlayerToTeam = async (auctionPlayerId, teamId) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({ team_id: teamId })
@@ -84,13 +85,13 @@ export const assignPlayerToTeam = async (auctionPlayerId, teamId) => {
         if (error) throw error;
         return data[0];
     } catch (error) {
-        console.error('Error assigning player to team:', error);
         throw error;
     }
 };
 
 export const removePlayerFromTeam = async (auctionPlayerId) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({ team_id: null })
@@ -100,13 +101,13 @@ export const removePlayerFromTeam = async (auctionPlayerId) => {
         if (error) throw error;
         return data[0];
     } catch (error) {
-        console.error('Error removing player from team:', error);
         throw error;
     }
 };
 
 export const getSoldPlayersByTeam = async (auctionId) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auction_players')
             .select(`
@@ -123,13 +124,13 @@ export const getSoldPlayersByTeam = async (auctionId) => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error getting sold players:', error);
         throw error;
     }
 };
 
 export const getUnsoldPlayersByAgeGroup = async (auctionId) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auction_players')
             .select(`
@@ -146,7 +147,6 @@ export const getUnsoldPlayersByAgeGroup = async (auctionId) => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error getting unsold players:', error);
         throw error;
     }
 };

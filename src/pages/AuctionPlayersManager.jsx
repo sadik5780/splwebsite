@@ -73,7 +73,6 @@ const AuctionPlayersManager = ({ auctionId: propAuctionId }) => {
             const { getTeamRemainingPoints } = await import('../services/auctionService');
             const points = await getTeamRemainingPoints(auctionId);
             setTeamPoints(points);
-            console.log('✅ Team points updated:', points);
 
             setError(null);
         } catch (err) {

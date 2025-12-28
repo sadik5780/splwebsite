@@ -5,7 +5,9 @@ import { supabase } from '../lib/supabase';
  * @returns {Promise<Array>} Array of slides (headers + players) in correct sequence
  */
 export const fetchPlayers = async () => {
+
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('players')
             .select('*');
@@ -13,8 +15,6 @@ export const fetchPlayers = async () => {
         if (error) {
             throw error;
         }
-
-        console.log('📊 Fetched', data?.length, 'players from Supabase');
 
         // Group players by age_group
         const under16 = data.filter(p =>
@@ -26,8 +26,6 @@ export const fetchPlayers = async () => {
         const open = data.filter(p =>
             p.age_group === 'Open'
         );
-
-        console.log('📊 Groups - U16:', under16.length, 'U19:', under19.length, 'Open:', open.length);
 
         // Build slides array with headers and players
         const slides = [];
@@ -103,10 +101,8 @@ export const fetchPlayers = async () => {
             });
         }
 
-        console.log('✅ Built', slides.length, 'total slides (headers + players)');
         return slides;
     } catch (error) {
-        console.error('Error fetching players from Supabase:', error);
         throw error;
     }
 };
@@ -119,6 +115,7 @@ export const fetchPlayers = async () => {
  */
 export const fetchAllPlayers = async () => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('players')
             .select('*')
@@ -126,10 +123,8 @@ export const fetchAllPlayers = async () => {
 
         if (error) throw error;
 
-        console.log('📋 Fetched', data?.length, 'players for admin');
         return data;
     } catch (error) {
-        console.error('Error fetching all players:', error);
         throw error;
     }
 };
@@ -141,6 +136,7 @@ export const fetchAllPlayers = async () => {
  */
 export const searchPlayers = async (query) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('players')
             .select('*')
@@ -149,7 +145,6 @@ export const searchPlayers = async (query) => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error searching players:', error);
         throw error;
     }
 };
@@ -161,6 +156,9 @@ export const searchPlayers = async (query) => {
  */
 export const createPlayer = async (playerData) => {
     try {
+        if (!supabase) {
+            return null;
+        }
         const { data, error } = await supabase
             .from('players')
             .insert([playerData])
@@ -168,10 +166,8 @@ export const createPlayer = async (playerData) => {
 
         if (error) throw error;
 
-        console.log('✅ Created player:', data[0].full_name);
         return data[0];
     } catch (error) {
-        console.error('Error creating player:', error);
         throw error;
     }
 };
@@ -184,6 +180,9 @@ export const createPlayer = async (playerData) => {
  */
 export const updatePlayer = async (id, playerData) => {
     try {
+        if (!supabase) {
+            return null;
+        }
         const { data, error } = await supabase
             .from('players')
             .update(playerData)
@@ -192,10 +191,8 @@ export const updatePlayer = async (id, playerData) => {
 
         if (error) throw error;
 
-        console.log('✅ Updated player:', data[0].full_name);
         return data[0];
     } catch (error) {
-        console.error('Error updating player:', error);
         throw error;
     }
 };
@@ -207,16 +204,16 @@ export const updatePlayer = async (id, playerData) => {
  */
 export const deletePlayer = async (id) => {
     try {
+        if (!supabase) {
+            return;
+        }
         const { error } = await supabase
             .from('players')
             .delete()
             .eq('id', id);
 
         if (error) throw error;
-
-        console.log('✅ Deleted player:', id);
     } catch (error) {
-        console.error('Error deleting player:', error);
         throw error;
     }
 };

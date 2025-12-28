@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
  */
 export const createAuction = async (auctionName, auctionSeason, welcomeText = 'Welcome to SPL Season 6 Auction Hall', basePointsPerTeam = 1000) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auctions')
             .insert([{
@@ -20,10 +21,8 @@ export const createAuction = async (auctionName, auctionSeason, welcomeText = 'W
             .select();
 
         if (error) throw error;
-        console.log('✅ Created auction:', data[0].auction_name);
         return data[0];
     } catch (error) {
-        console.error('Error creating auction:', error);
         throw error;
     }
 };
@@ -33,6 +32,7 @@ export const createAuction = async (auctionName, auctionSeason, welcomeText = 'W
  */
 export const fetchAllAuctions = async () => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auctions')
             .select('*');
@@ -40,7 +40,6 @@ export const fetchAllAuctions = async () => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error fetching auctions:', error);
         throw error;
     }
 };
@@ -50,6 +49,7 @@ export const fetchAllAuctions = async () => {
  */
 export const getActiveAuction = async () => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auctions')
             .select('*')
@@ -59,7 +59,6 @@ export const getActiveAuction = async () => {
         if (error && error.code !== 'PGRST116') throw error;
         return data;
     } catch (error) {
-        console.error('Error getting active auction:', error);
         throw error;
     }
 };
@@ -69,6 +68,7 @@ export const getActiveAuction = async () => {
  */
 export const setActiveAuction = async (auctionId) => {
     try {
+        if (!supabase) return null;
         const { error: deactivateError } = await supabase
             .from('auctions')
             .update({ is_active: false })
@@ -83,10 +83,8 @@ export const setActiveAuction = async (auctionId) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Activated auction:', data[0].auction_name);
         return data[0];
     } catch (error) {
-        console.error('Error setting active auction:', error);
         throw error;
     }
 };
@@ -96,6 +94,7 @@ export const setActiveAuction = async (auctionId) => {
  */
 export const toggleAuctionLock = async (auctionId, isLocked) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auctions')
             .update({ is_locked: isLocked })
@@ -103,10 +102,8 @@ export const toggleAuctionLock = async (auctionId, isLocked) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Auction lock status:', isLocked);
         return data[0];
     } catch (error) {
-        console.error('Error toggling auction lock:', error);
         throw error;
     }
 };
@@ -116,6 +113,7 @@ export const toggleAuctionLock = async (auctionId, isLocked) => {
  */
 export const updateAuction = async (id, updates) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auctions')
             .update(updates)
@@ -123,10 +121,8 @@ export const updateAuction = async (id, updates) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Updated auction:', data[0].auction_name);
         return data[0];
     } catch (error) {
-        console.error('Error updating auction:', error);
         throw error;
     }
 };
@@ -136,15 +132,14 @@ export const updateAuction = async (id, updates) => {
  */
 export const deleteAuction = async (id) => {
     try {
+        if (!supabase) return;
         const { error } = await supabase
             .from('auctions')
             .delete()
             .eq('id', id);
 
         if (error) throw error;
-        console.log('✅ Deleted auction:', id);
     } catch (error) {
-        console.error('Error deleting auction:', error);
         throw error;
     }
 };
@@ -166,6 +161,7 @@ const getNextPosition = async (auctionId, ageGroup) => {
 
 export const addPlayerToAuction = async (auctionId, playerId, ageGroup) => {
     try {
+        if (!supabase) return null;
         const positionNumber = await getNextPosition(auctionId, ageGroup);
 
         const { data, error } = await supabase
@@ -182,16 +178,15 @@ export const addPlayerToAuction = async (auctionId, playerId, ageGroup) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Added player to auction at position', positionNumber);
         return data[0];
     } catch (error) {
-        console.error('Error adding player to auction:', error);
         throw error;
     }
 };
 
 export const removePlayerFromAuction = async (auctionId, playerId) => {
     try {
+        if (!supabase) return;
         const { error } = await supabase
             .from('auction_players')
             .delete()
@@ -199,9 +194,7 @@ export const removePlayerFromAuction = async (auctionId, playerId) => {
             .eq('player_id', playerId);
 
         if (error) throw error;
-        console.log('✅ Removed player from auction');
     } catch (error) {
-        console.error('Error removing player from auction:', error);
         throw error;
     }
 };
@@ -211,6 +204,7 @@ export const removePlayerFromAuction = async (auctionId, playerId) => {
  */
 export const softRemovePlayer = async (auctionId, playerId, isRemoved) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({ is_removed: isRemoved })
@@ -219,16 +213,15 @@ export const softRemovePlayer = async (auctionId, playerId, isRemoved) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Soft removed player:', isRemoved);
         return data[0];
     } catch (error) {
-        console.error('Error soft removing player:', error);
         throw error;
     }
 };
 
 export const updateAuctionPlayerPosition = async (auctionId, playerId, newPosition) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({ position_number: newPosition })
@@ -237,16 +230,15 @@ export const updateAuctionPlayerPosition = async (auctionId, playerId, newPositi
             .select();
 
         if (error) throw error;
-        console.log('✅ Updated player position to', newPosition);
         return data[0];
     } catch (error) {
-        console.error('Error updating player position:', error);
         throw error;
     }
 };
 
 export const togglePlayerReserved = async (auctionId, playerId, isReserved) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({ is_reserved: isReserved })
@@ -255,10 +247,8 @@ export const togglePlayerReserved = async (auctionId, playerId, isReserved) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Toggled player reserved:', isReserved);
         return data[0];
     } catch (error) {
-        console.error('Error toggling player reserved:', error);
         throw error;
     }
 };
@@ -268,6 +258,7 @@ export const togglePlayerReserved = async (auctionId, playerId, isReserved) => {
  */
 export const setPlayerAsCurrent = async (auctionId, playerId) => {
     try {
+        if (!supabase) return null;
         // Unset all current players in this auction
         await supabase
             .from('auction_players')
@@ -283,16 +274,15 @@ export const setPlayerAsCurrent = async (auctionId, playerId) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Set player as current');
         return data[0];
     } catch (error) {
-        console.error('Error setting player as current:', error);
         throw error;
     }
 };
 
 export const getAuctionPlayers = async (auctionId) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auction_players')
             .select(`
@@ -306,7 +296,6 @@ export const getAuctionPlayers = async (auctionId) => {
         if (error) throw error;
         return data;
     } catch (error) {
-        console.error('Error getting auction players:', error);
         throw error;
     }
 };
@@ -315,7 +304,6 @@ export const getActiveAuctionSlides = async () => {
     try {
         const auction = await getActiveAuction();
         if (!auction) {
-            console.warn('⚠️ No active auction found');
             return [];
         }
 
@@ -369,10 +357,8 @@ export const getActiveAuctionSlides = async () => {
             }
         });
 
-        console.log('✅ Built', slides.length, 'auction slides');
         return slides;
     } catch (error) {
-        console.error('Error getting active auction slides:', error);
         throw error;
     }
 };
@@ -384,6 +370,7 @@ export const getActiveAuctionSlides = async () => {
  */
 export const updateAuctionBasePoints = async (auctionId, basePoints) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auctions')
             .update({ base_points_per_team: basePoints })
@@ -391,10 +378,8 @@ export const updateAuctionBasePoints = async (auctionId, basePoints) => {
             .select();
 
         if (error) throw error;
-        console.log('✅ Updated base points to:', basePoints);
         return data[0];
     } catch (error) {
-        console.error('Error updating base points:', error);
         throw error;
     }
 };
@@ -405,6 +390,7 @@ export const updateAuctionBasePoints = async (auctionId, basePoints) => {
  */
 export const getTeamRemainingPoints = async (auctionId) => {
     try {
+        if (!supabase) return [];
         // Get auction base points
         const { data: auction, error: auctionError } = await supabase
             .from('auctions')
@@ -459,7 +445,6 @@ export const getTeamRemainingPoints = async (auctionId) => {
 
         return result;
     } catch (error) {
-        console.error('Error getting team remaining points:', error);
         throw error;
     }
 };
@@ -473,6 +458,8 @@ export const sellPlayer = async ({ auctionPlayerId, teamId, soldPoints }) => {
         if (soldPoints <= 0) {
             throw new Error('Sold points must be greater than 0');
         }
+
+        if (!supabase) throw new Error('Supabase disabled');
 
         // Get auction player details
         const { data: auctionPlayer, error: apError } = await supabase
@@ -513,7 +500,6 @@ export const sellPlayer = async ({ auctionPlayerId, teamId, soldPoints }) => {
 
         if (error) throw error;
 
-        console.log('✅ Player sold for', soldPoints, 'points');
         return data[0];
     } catch (error) {
         console.error('Error selling player:', error);
@@ -526,6 +512,7 @@ export const sellPlayer = async ({ auctionPlayerId, teamId, soldPoints }) => {
  */
 export const unsoldPlayer = async (auctionPlayerId) => {
     try {
+        if (!supabase) return null;
         const { data, error } = await supabase
             .from('auction_players')
             .update({
@@ -536,10 +523,8 @@ export const unsoldPlayer = async (auctionPlayerId) => {
 
         if (error) throw error;
 
-        console.log('✅ Player unsold');
         return data[0];
     } catch (error) {
-        console.error('Error unselling player:', error);
         throw error;
     }
 };
@@ -549,6 +534,7 @@ export const unsoldPlayer = async (auctionPlayerId) => {
  */
 export const getAuctionBasePoints = async (auctionId) => {
     try {
+        if (!supabase) return 0;
         const { data, error } = await supabase
             .from('auctions')
             .select('base_points_per_team')
@@ -558,7 +544,6 @@ export const getAuctionBasePoints = async (auctionId) => {
         if (error) throw error;
         return data.base_points_per_team || 0;
     } catch (error) {
-        console.error('Error getting auction base points:', error);
         throw error;
     }
 };
@@ -568,6 +553,7 @@ export const getAuctionBasePoints = async (auctionId) => {
  */
 export const getSoldPlayersByTeam = async (auctionId) => {
     try {
+        if (!supabase) return [];
         const { data, error } = await supabase
             .from('auction_players')
             .select(`
@@ -605,7 +591,6 @@ export const getSoldPlayersByTeam = async (auctionId) => {
 
         return Object.values(groupedByTeam);
     } catch (error) {
-        console.error('Error getting sold players by team:', error);
         throw error;
     }
 };

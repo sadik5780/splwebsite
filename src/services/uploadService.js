@@ -7,7 +7,9 @@ import { supabase } from '../lib/supabase';
  */
 export const uploadPlayerPhoto = async (file) => {
     try {
-        console.log('📤 Uploading photo to Supabase Storage...');
+        if (!supabase) {
+            return { success: false, error: 'Supabase disabled' };
+        }
 
         // Generate unique filename with timestamp
         const timestamp = Date.now();
@@ -23,7 +25,6 @@ export const uploadPlayerPhoto = async (file) => {
             });
 
         if (error) {
-            console.error('❌ Supabase upload error:', error);
             throw error;
         }
 
@@ -34,15 +35,12 @@ export const uploadPlayerPhoto = async (file) => {
 
         const photo_url = urlData.publicUrl;
 
-        console.log('✅ Photo uploaded successfully:', photo_filename);
-
         return {
             success: true,
             photo_filename,
             photo_url,
         };
     } catch (error) {
-        console.error('❌ Upload error:', error);
         throw new Error(`Failed to upload photo: ${error.message}`);
     }
 };

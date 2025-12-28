@@ -161,10 +161,6 @@ const PlayersAdmin = () => {
     };
 
     const getCroppedImg = (image, crop) => {
-        console.log('getCroppedImg called with crop:', crop);
-        console.log('Image dimensions:', image.width, 'x', image.height);
-        console.log('Natural dimensions:', image.naturalWidth, 'x', image.naturalHeight);
-
         const canvas = document.createElement('canvas');
         const scaleX = image.naturalWidth / image.width;
         const scaleY = image.naturalHeight / image.height;
@@ -180,8 +176,6 @@ const PlayersAdmin = () => {
                 unit: 'px'
             };
         }
-
-        console.log('Pixel crop:', pixelCrop);
 
         canvas.width = pixelCrop.width;
         canvas.height = pixelCrop.height;
@@ -202,42 +196,30 @@ const PlayersAdmin = () => {
         return new Promise((resolve, reject) => {
             canvas.toBlob((blob) => {
                 if (!blob) {
-                    console.error('Canvas is empty - blob creation failed');
                     reject(new Error('Canvas is empty'));
                     return;
                 }
-                console.log('Blob created successfully, size:', blob.size);
                 const file = new File([blob], selectedFile?.name || 'cropped.jpg', {
                     type: selectedFile?.type || 'image/jpeg',
                     lastModified: Date.now(),
                 });
-                console.log('File created:', file.name, file.size);
                 resolve(file);
             }, selectedFile?.type || 'image/jpeg');
         });
     };
 
     const handleSaveCrop = async () => {
-        console.log('handleSaveCrop called');
-        console.log('completedCrop:', completedCrop);
-        console.log('imgRef.current:', imgRef.current);
-
         if (!completedCrop || !imgRef.current) {
-            console.error('Missing completedCrop or imgRef');
             return;
         }
 
         try {
             setUploading(true);
-            console.log('Starting crop process...');
 
             const croppedFile = await getCroppedImg(imgRef.current, completedCrop);
-            console.log('Cropped file created:', croppedFile);
 
             // Upload cropped image
-            console.log('Uploading to server...');
             const uploadResult = await uploadPlayerPhoto(croppedFile);
-            console.log('Upload result:', uploadResult);
 
             // Update form data with uploaded image URLs
             setFormData(prev => ({
@@ -246,15 +228,12 @@ const PlayersAdmin = () => {
                 photo_url: uploadResult.photo_url,
             }));
 
-            console.log('Form data updated with new photo URL:', uploadResult.photo_url);
             setCroppedImageUrl(uploadResult.photo_url);
             setShowCropModal(false);
             setImageSrc(null);
             setSelectedFile(null);
             setError(null);
-            console.log('Crop save completed successfully');
         } catch (err) {
-            console.error('Error in handleSaveCrop:', err);
             setError('Failed to upload image: ' + err.message);
         } finally {
             setUploading(false);
@@ -295,18 +274,14 @@ const PlayersAdmin = () => {
                 photo_filename: formData.photo_filename,
                 photo_url: formData.photo_url,
             };
-            console.log('💾 Saving player data:', playerData);
 
             // Create or update
             if (editingPlayer) {
-                console.log('Updating player with ID:', editingPlayer.id);
                 await updatePlayer(editingPlayer.id, playerData);
             } else {
-                console.log('Creating new player');
                 await createPlayer(playerData);
             }
 
-            console.log('Reloading players list...');
             await loadPlayers();
 
             // Clear form and states
@@ -325,7 +300,6 @@ const PlayersAdmin = () => {
             setImageSrc(null);
             setSelectedFile(null);
 
-            console.log('Player saved and form reset');
         } catch (err) {
             setError(err.message);
         } finally {

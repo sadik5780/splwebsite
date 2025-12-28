@@ -54,10 +54,10 @@ const AppContent = () => {
 // Global Execution Control Wrapper
 const App = () => {
   // BLOCK #1 — LOCALHOST HARD BLOCK (HIGHEST PRIORITY)
-  const hostname = window.location.hostname;
-  if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]') {
-    return <LocalhostNotSupported />;
-  }
+  // const hostname = window.location.hostname;
+  // if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1' || hostname === '[::1]') {
+  //   return <LocalhostNotSupported />;
+  // }
 
   // BLOCK #2 — APPLICATION LOCK (PAYMENT / ACCESS CONTROL)
   // Controlled ONLY via environment variable: REACT_APP_APP_LOCKED=true | false

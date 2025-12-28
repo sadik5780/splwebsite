@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Canvasanimation from "./CanvasAnimation";
-import playersData from "./playersData.json";
+// import playersData from "./playersData.json";
 import { getActiveAuctionSlides } from "../services/auctionService";
 
 const Slider = () => {
-  const [players, setPlayers] = useState(playersData);
+  const [players, setPlayers] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   // Loading and error states for Supabase data fetching
@@ -17,25 +17,19 @@ const Slider = () => {
   // Fetch players from active auction on component mount
   useEffect(() => {
     const loadPlayers = async () => {
-      console.log('🔄 Attempting to fetch auction slides...');
       try {
         const fetchedPlayers = await getActiveAuctionSlides();
-        console.log('✅ Successfully fetched auction slides:', fetchedPlayers?.length, 'slides');
-        console.log('📝 First slide:', fetchedPlayers?.[0]);
 
         if (fetchedPlayers && fetchedPlayers.length > 0) {
           setPlayers(fetchedPlayers);
-          console.log('✅ Players state updated with auction slides');
         } else {
-          console.warn('⚠️ No active auction or no slides, using fallback');
+          // No slides found
         }
         setLoading(false);
       } catch (err) {
-        console.error('❌ Failed to fetch auction slides:', err);
-        console.error('❌ Error details:', err.message);
         setError(err.message);
         // Keep using playersData.json as fallback
-        console.log('📋 Using playersData.json as fallback');
+
         setLoading(false);
       }
     };
