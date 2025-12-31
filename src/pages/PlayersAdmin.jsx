@@ -326,8 +326,8 @@ const PlayersAdmin = () => {
     };
 
     return (
-        <div className="players-admin-container">
-            <div className="header-section">
+        <div className="admin-container">
+            <div className="admin-header">
                 <h1>Players Management</h1>
                 <div style={{ display: 'flex', gap: '10px' }}>
                     <button onClick={() => exportPlayersToExcel(players, 'all_players.xlsx')} className="btn-primary" disabled={players.length === 0}>
